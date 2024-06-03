@@ -1,69 +1,77 @@
+
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-exports.auth = (req, res, next) => {
-    try {
-        // extract JWT Token from request body
-        const token = req.body.token;
+exports.auth = (req, res, next) =>{
+    try{
+        // extract JWT Token
+        // panding other feth data
+        const token = res.body.token;
 
-        if (!token) {
+        if(!token){
             return res.status(401).json({
                 success: false,
-                message: "Token missing"
-            });
+                message: "Token messing"
+            })
         }
 
-        // verify the token
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            console.log(decoded);
+        // verify the  token
+        try{
+            const payload = jwt.verify(token, process.env.JWT_SECRET);
+            console.log(payload);
 
-            req.user = decoded;
-            next(); // Move to the next middleware or route handler
-        } catch (error) {
-            return res.status(401).json({
-                success: false,
-                message: 'Token is invalid',
-            });
-        }
-    } catch (error) {
+            req.user = payload;
+        } catch(error){
+           return res.status(401).json({
+            success:false,
+            message: 'token is invalid',
+           });
+        } 
+        next();
+    }
+    catch(error){
         return res.status(401).json({
             success: false,
-            message: 'Something went wrong while verifying the token',
+            message: 'Something went to wrong, while verifying the token',
+        });       
+    }
+   
+}
+
+exports.isStudent = (req, res, next) =>{
+    try{
+        if(req.user.role != "Student"){
+            return res.status(401).json({
+                success: false,
+                message: 'This is Protected route for Student',
+            })
+        }
+        next();
+
+    }
+    catch(error){
+        return res.status(500).json({
+            success:false,
+            message:"user role is not matching"
         });
     }
 }
 
-exports.isStudent = (req, res, next) => {
-    try {
-        if (req.user.role !== "Student") {
+exports.isAdmin = (req, res, next) =>{
+    try{
+        if(req.user.role != "Admin"){
             return res.status(401).json({
                 success: false,
-                message: 'This is a protected route for Students',
-            });
+                message: 'This is Protected route for Admin',
+            })
         }
         next();
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Token is missing"
-        });
-    }
-}
 
-exports.isAdmin = (req, res, next) => {
-    try {
-        if (req.user.role !== "Admin") {
-            return res.status(401).json({
-                success: false,
-                message: 'This is a protected route for Admins',
-            });
-        }
-        next();
-    } catch (error) {
+    }
+    catch(error){
         return res.status(500).json({
-            success: false,
-            message: "Token is missing"
+            success:false,
+            message:"User role is not matching"
         });
     }
 }
