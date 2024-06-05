@@ -74,6 +74,7 @@ exports.login = async (req, res) => {
 
         const payload = {
             email: user.email,
+            id: user._id,
             role: user.role,
         };
         // verify the password and generate jwt token
@@ -90,15 +91,25 @@ exports.login = async (req, res) => {
             user.password = undefined;
 
             let options = {
-                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                expires: new Date(Date.now() + 30000),
                 httpOnly: true,
             };
+
             res.cookie("token", token, options).status(200).json({
                 success: true,
                 token,
                 user,
                 message: 'User Logged in Successfully',
             });
+
+            // res.status(200).json({
+            //     success: true,
+            //     token,
+            //     user,
+            //     message: "User loged in successfully",
+            // });
+
+
         } else {
             // password not match
             return res.status(403).json({
