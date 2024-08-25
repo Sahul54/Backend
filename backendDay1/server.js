@@ -29,7 +29,7 @@ app.post('/about', (request, response) => { // Fixed typo "resopnse" to "respons
 
 const mongoose = require('mongoose'); // Fixed typo "mongioose" to "mongoose"
 
-mongoose.connect('mongodb://localhost:27017/myDatabase')
+mongoose.connect('mongodb://localhost:27017/MyDatabase')
 .then(() => {
     console.log("Connection Successful!");
 })

@@ -1,4 +1,3 @@
-// index.js
 
 // app create
 const express = require("express");
@@ -13,7 +12,10 @@ app.use(express.json());
 
 // file upload
 const fileUpload = require("express-fileupload");
-app.use(fileUpload(true));
+app.use(fileUpload({
+    useTempFiles : true,
+    tempFileDir : '/tmp/'
+}));
 
 // db connect
 const db = require("./config/database");
